@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+langgraph
+langchain
+langchain-ollama
+langchain-openai
+langchain-mcp-adapters==0.3.2
+mcp-server-fetch
+python-dotenv
