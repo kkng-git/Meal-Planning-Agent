@@ -75,4 +75,13 @@ async def chat(request: ChatRequest):
     if not isinstance(content, str):
         content = str(content)
 
+    if not content.strip():
+        logger.error("Agent produced an empty final response")
+        return ChatResponse(
+            response=(
+                "The agent completed without producing a final response. "
+                "Please try again."
+            )
+        )
+
     return ChatResponse(response=content)

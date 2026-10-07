@@ -170,6 +170,14 @@ async def build_agent_runtime() -> AgentRuntime:
                 *state["messages"],
             ]
         )
+
+        logger.info(
+            "Model response: content=%r tool_calls=%r invalid_tool_calls=%r",
+            response.content,
+            response.tool_calls,
+            response.invalid_tool_calls,
+        )
+
         return {"messages": [response]}
 
     # Create graph
