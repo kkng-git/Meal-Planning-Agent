@@ -42,6 +42,8 @@ Chronological Account:
 
     Once this issue was fixed the tests passed and I was ready to set up for Cloud deployment. I actually ended up choosing to use OpenAI's GPT5-mini with minimal reasoning after hearing some of the concerns with random latency spikes from my classmate.
 
+    My agent helped me Dockerize my agent and deploy it onto Google Cloud Run, where I tested it once more with a modified test suite.
+
 
 Verification Narrative:
 

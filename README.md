@@ -193,10 +193,19 @@ source .venv/bin/activate
 python live_test.py
 ```
 
+To test the deployed service and verify selected tools through Cloud Logging:
+
+```bash
+python live_test.py \
+  --base-url https://meal-planning-agent-245569006163.us-west1.run.app
+```
+
 It covers discovery, request validation, no-tool reasoning, multi-tool
 reasoning, filesystem operations, tool errors, conversation memory, session
-isolation, malformed content, and connection failure degradation. The latest
-OpenAI-backed run passed all 12 cases.
+isolation, malformed content, and connection failure degradation. The local
+suite has 12 cases, including transport-failure injection. The remote-safe
+suite omits that destructive fault injection; its latest run passed all 11
+cases against Cloud Run.
 
 ## Docker
 
@@ -212,8 +221,9 @@ Run with local environment variables:
 docker run --rm -p 8080:8080 --env-file .env meal-planning-agent
 ```
 
-The image runs as a non-root user and includes Node.js/npm for the Filesystem
-MCP server. Never copy `.env` into an image.
+The image runs as a non-root user, includes Node.js/npm for the Filesystem MCP
+server, and preinstalls Fetch MCP's Readability dependencies at build time.
+Never copy `.env` into an image.
 
 ## Google Cloud Run deployment
 
@@ -224,8 +234,9 @@ Current deployment:
 - Service: [`meal-planning-agent`](https://meal-planning-agent-245569006163.us-west1.run.app)
 - Health: [`/health`](https://meal-planning-agent-245569006163.us-west1.run.app/health)
 
-Revision `meal-planning-agent-00001-46n` was smoke-tested with OpenAI and a
-Filesystem MCP write/read round trip.
+Revision `meal-planning-agent-00004-9tx` passed all 11 deployment-safe tests,
+including OpenAI responses, three-server MCP discovery, Search/Fetch/Filesystem
+chaining, error recovery, conversation memory, and session isolation.
 
 Prerequisites:
 

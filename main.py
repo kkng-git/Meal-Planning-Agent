@@ -67,7 +67,7 @@ async def chat(request: ChatRequest):
                 "configurable": {
                     "thread_id": request.session_id,
                 },
-                "recursion_limit": 12,
+                "recursion_limit": 16,
             },
         )
     except Exception:

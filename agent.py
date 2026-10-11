@@ -38,6 +38,9 @@ Tool policy:
   3. fetch only that selected recipe page,
   4. validate the ingredients and instructions,
   5. save the result with both a path and content.
+- Use at most three Fetch calls for one page. If the bounded excerpts remain
+  incomplete, continue with only verified facts or explain the limitation;
+  do not keep fetching the same page.
 - Never invent tool results.
 - If a tool fails, explain the limitation and continue when possible.
 - Cite the source URL for web recipes.
@@ -244,6 +247,11 @@ def build_system_prompt(tool_names: list[str]) -> str:
             workflow.append(
                 "  5. if the user requested it, save the result with both a path and content."
             )
+        workflow.append(
+            "- Use at most three Fetch calls for one page. If the bounded "
+            "excerpts remain incomplete, continue with only verified facts "
+            "or explain the limitation; do not keep fetching the same page."
+        )
         instructions.extend(workflow)
 
     instructions.extend(
@@ -344,10 +352,14 @@ async def limit_mcp_tool_output(request: ToolCallRequest, execute):
             }
         )
     elif tool_name == "fetch_fetch":
+        try:
+            start_index = max(0, int(args.get("start_index", 0)))
+        except (TypeError, ValueError):
+            start_index = 0
         args.update(
             {
                 "max_length": FETCH_MAX_LENGTH,
-                "start_index": 0,
+                "start_index": start_index,
                 "raw": False,
             }
         )
