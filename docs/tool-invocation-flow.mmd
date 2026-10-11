@@ -1,0 +1,34 @@
+---
+title: Meal Planning Agent - Tool Invocation Flow
+config:
+  theme: neutral
+  sequence:
+    mirrorActors: false
+    useMaxWidth: true
+---
+sequenceDiagram
+    participant U as User
+    participant A as FastAPI
+    participant G as LangGraph agent
+    participant L as OpenAI LLM
+    participant M as MCP client
+    participant S as MCP server
+
+    U->>A: POST /chat {query, session_id}
+    A->>G: Invoke with session_id as thread_id
+    G->>L: Messages plus available tool schemas
+    alt No tool needed
+        L-->>G: Final answer
+    else Tool needed
+        loop Until the LLM has enough information
+            L-->>G: Select tool and arguments
+            G->>M: MCP tools/call
+            M->>S: Invoke discovered tool
+            S-->>M: Tool result or handled error
+            M-->>G: Compact tool result
+            G->>L: Continue reasoning with result
+        end
+        L-->>G: Synthesized final answer
+    end
+    G-->>A: Final message
+    A-->>U: {response}

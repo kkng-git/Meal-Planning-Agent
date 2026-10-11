@@ -12,6 +12,14 @@ AI Tools used:
             - Process my plan.md and verify that the plan fits the assignment, makes sense, and will hit all the points on the rubric
             - Aid in coding the LangGraph and setting up FastAPI
             - Describe tests I could run to test the agent comprehensively
+        
+    Gemma4:e4b:
+        Purpose:
+            - My local testing LLM
+
+    OpenAI GPT-5-Mini:
+        Purpose:
+            - LLM used in deployment instance
 
 
 Chronological Account:
@@ -47,7 +55,7 @@ Chronological Account:
 
 Verification Narrative:
 
-    My tests were structured to ensure all of the desired functionality for this agent. I used these as the baseline for correctness for this agent and it gave me insight on how well the agent was functioning. I inspected tool execution to find issues when the tests weren't producing the result I wanted, and it helped me decide what to change in terms of implementation.
+    My tests were structured to ensure all of the desired functionality for this agent. I used these as the baseline for correctness for this agent and it gave me insight on how well the agent was functioning. I inspected tool execution to find issues when the tests weren't producing the result I wanted, and it helped me decide what to change in terms of implementation. With the help of my agent, I completed 12 local tests, 11 live tests, Cloud Logging inspection, simulated MCP outage, malformed response handling, tool errors, memory, and session isolation. I believe this is comprehensive, as it helped us improve implementation to handle the desired use cases more effectively.
 
 What I learned: 
 

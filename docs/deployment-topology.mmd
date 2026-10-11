@@ -1,0 +1,34 @@
+---
+title: Meal Planning Agent - Deployment Topology
+config:
+  theme: neutral
+  flowchart:
+    curve: basis
+---
+flowchart TB
+    subgraph Local[Local development]
+        Env[Local .env] --> Docker[Docker build and local container test]
+        Docker --> LocalApp[FastAPI + LangGraph]
+        Ollama[Optional Ollama gemma4:e4b] --> LocalApp
+        OpenAILocal[OpenAI API] --> LocalApp
+        LocalApp --> LocalMCP[Filesystem + Tavily + Fetch MCP]
+    end
+
+    Source[Source + Dockerfile] -->|gcloud builds submit| Build[Cloud Build]
+    Build --> Registry[Artifact Registry]
+    Registry --> Run[Cloud Run service]
+    Env -->|loaded by deploy.sh| Secrets[Secret Manager]
+    Secrets -->|OPENAI_API_KEY and TAVILY_API_KEY| Run
+    DeployEnv[Non-secret environment variables] --> Run
+    Run --> OpenAICloud[OpenAI API]
+    Run --> CloudMCP[Filesystem + Tavily + Fetch MCP]
+    Run --> URL[Public Cloud Run URL]
+
+    classDef local fill:#e8f1ff,stroke:#3569a8,color:#10233f,stroke-width:2px
+    classDef cloud fill:#f2eaff,stroke:#7952b3,color:#25133f,stroke-width:2px
+    classDef external fill:#e9f8ef,stroke:#378357,color:#153c27,stroke-width:2px
+    classDef secret fill:#fff4dc,stroke:#b87913,color:#4d3006,stroke-width:2px
+    class Env,LocalApp,Ollama,OpenAILocal,LocalMCP,Docker local
+    class Source,Build,Registry,Run,DeployEnv,URL cloud
+    class OpenAICloud,CloudMCP external
+    class Secrets secret

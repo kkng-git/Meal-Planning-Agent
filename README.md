@@ -20,80 +20,18 @@ It exposes a FastAPI service and integrates three real MCP servers.
 
 ### 1. System architecture
 
-```mermaid
-flowchart LR
-    User[API client] -->|POST /chat| API[FastAPI service]
-    API -->|query + thread_id| Graph[LangGraph state graph]
-    Graph --> Agent[LLM agent node]
-    Agent <-->|reasoning and tool calls| OpenAI[OpenAI gpt-5-mini]
-    Graph <-->|conversation state| Memory[InMemorySaver checkpointer]
-    Agent -->|tool call| ToolNode[LangGraph ToolNode]
-    ToolNode --> Limits[Argument normalization and output limits]
-    Limits --> MCP[LangChain MCP client wrapper]
-    MCP --> FS[Filesystem MCP server]
-    MCP --> Tavily[Tavily Search MCP server]
-    MCP --> Fetch[Fetch MCP server]
-    FS -->|tool result| ToolNode
-    Tavily -->|tool result| ToolNode
-    Fetch -->|tool result| ToolNode
-    ToolNode -->|result message| Agent
-    Agent -->|final response| API
-    API --> User
-```
+![Meal Planning Agent system architecture](docs/system-architecture.jpg)
 
 ### 2. Tool invocation flow
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant A as FastAPI
-    participant G as LangGraph agent
-    participant L as OpenAI LLM
-    participant M as MCP client
-    participant S as MCP server
-
-    U->>A: POST /chat {query, session_id}
-    A->>G: Invoke with session_id as thread_id
-    G->>L: Messages plus available tool schemas
-    alt No tool needed
-        L-->>G: Final answer
-    else Tool needed
-        loop Until the LLM has enough information
-            L-->>G: Select tool and arguments
-            G->>M: MCP tools/call
-            M->>S: Invoke discovered tool
-            S-->>M: Tool result or handled error
-            M-->>G: Compact tool result
-            G->>L: Continue reasoning with result
-        end
-        L-->>G: Synthesized final answer
-    end
-    G-->>A: Final message
-    A-->>U: {response}
-```
+![Meal Planning Agent tool invocation flow](docs/tool-invocation-flow.jpg)
 
 ### 3. Deployment topology
 
-```mermaid
-flowchart TB
-    subgraph Local[Local development]
-        Env[.env] --> LocalApp[FastAPI + LangGraph]
-        Ollama[Optional Ollama gemma4:e4b] --> LocalApp
-        OpenAILocal[OpenAI API] --> LocalApp
-        LocalApp --> LocalMCP[Filesystem + Tavily + Fetch MCP]
-        Docker[Docker build and local container test]
-    end
+![Meal Planning Agent deployment topology](docs/deployment-topology.jpg)
 
-    Source[Source + Dockerfile] -->|gcloud builds submit| Build[Cloud Build]
-    Build --> Registry[Artifact Registry]
-    Registry --> Run[Cloud Run service]
-    ShellEnv[Local .env loaded by deploy.sh] --> Secrets[Secret Manager]
-    Secrets -->|OPENAI_API_KEY and TAVILY_API_KEY| Run
-    DeployEnv[Non-secret deployment variables] --> Run
-    Run --> OpenAICloud[OpenAI API]
-    Run --> CloudMCP[Filesystem + Tavily + Fetch MCP]
-    Run --> URL[Public Cloud Run URL]
-```
+Editable Mermaid sources for all three diagrams are stored beside the JPGs in
+the `docs/` directory.
 
 ## MCP servers
 
@@ -302,4 +240,5 @@ through grading as required by the assignment.
 - `live_test.py` - real end-to-end functionality suite
 - `Dockerfile` - non-root Cloud Run container
 - `deploy.sh` - build, secret setup, and deployment automation
+- `docs/` - required architecture diagrams as JPGs plus editable Mermaid sources
 - `PROCESS_LOG.md` - development and verification narrative
