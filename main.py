@@ -38,8 +38,15 @@ app = FastAPI(lifespan=lifespan)
 async def health():
     runtime: AgentRuntime = app.state.runtime
     return {
-        "status": "ok",
+        "status": (
+            "degraded"
+            if runtime.unavailable_servers or runtime.missing_tool_names
+            else "ok"
+        ),
         "tools": runtime.tool_names,
+        "discovered_tools": runtime.discovered_tool_names,
+        "unavailable_servers": runtime.unavailable_servers,
+        "missing_tools": runtime.missing_tool_names,
     }
 
 

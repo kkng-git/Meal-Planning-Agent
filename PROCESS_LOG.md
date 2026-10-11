@@ -36,7 +36,11 @@ Chronological Account:
 
     It gave me a long list of tests which I executed. See verification narrative for more details.
 
-    I did run into some failed tests at this point. Namely, I had issues with Tavily, which requested me to use a production key since I was making too many subsequent requests. I asked my agent if this looked right and they agreed, so I went ahead and created one.
+    I did run into some failed tests at this point. Namely, I had some weird behavior where my testing model, Gemma, would fail during certain tool calls and even generate their own searches with Tavily. As a result, I had to use my agent to debug that as well. It was an issue with how large my inputs were, which was too much to fit in the context window for my testing model Gemma4:e4b. 
+
+    The agent suggested that I create a model alias with a larger context window, but I told it to approach it differently; Check out the "what I learned section" to read more.
+
+    
 
 
 Verification Narrative: How you tested your code beyond running it once. Did you
@@ -49,3 +53,5 @@ Vibe-coding without verification does not demonstrate mastery.
 What I learned: 2–3 sentences on what the AI tools couldn’t do that you had to
 figure out yourself. This is the pedagogical anchor — the process log demonstrates
 the human-in-the-loop learning we teach in this course.
+
+    AI sometimes provides good solutions to my problems. However, in this case, it opted to use a larger model instead of using the inputs optimally. I realized that we could eliminate most of the tools and also compact the text so that the execution could fit inside the smaller context window. I did this instead of the provided solution, and it worked well!
