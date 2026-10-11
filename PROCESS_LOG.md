@@ -40,18 +40,13 @@ Chronological Account:
 
     The agent suggested that I create a model alias with a larger context window, but I told it to approach it differently; Check out the "what I learned section" to read more.
 
-    
+    Once this issue was fixed the tests passed and I was ready to set up for Cloud deployment. I actually ended up choosing to use OpenAI's GPT5-mini with minimal reasoning after hearing some of the concerns with random latency spikes from my classmate.
 
 
-Verification Narrative: How you tested your code beyond running it once. Did you
-write tests? Did you inspect tool execution? Did you compare against reference
-documentation? Did you probe error handling by making an MCP server unavailable?
-Vibe-coding without verification does not demonstrate mastery.
+Verification Narrative:
 
     My tests were structured to ensure all of the desired functionality for this agent. I used these as the baseline for correctness for this agent and it gave me insight on how well the agent was functioning. I inspected tool execution to find issues when the tests weren't producing the result I wanted, and it helped me decide what to change in terms of implementation.
 
-What I learned: 2–3 sentences on what the AI tools couldn’t do that you had to
-figure out yourself. This is the pedagogical anchor — the process log demonstrates
-the human-in-the-loop learning we teach in this course.
+What I learned: 
 
     AI sometimes provides good solutions to my problems. However, in this case, it opted to use a larger model instead of using the inputs optimally. I realized that we could eliminate most of the tools and also compact the text so that the execution could fit inside the smaller context window. I did this instead of the provided solution, and it worked well!

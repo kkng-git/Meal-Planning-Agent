@@ -72,7 +72,17 @@ class AgentRuntime:
 
 def build_model():
     # Choose LLM backend
-    provider = os.getenv("LLM_PROVIDER", "ollama").lower()
+    provider = os.getenv("LLM_PROVIDER", "openai").lower()
+
+    if provider == "openai":
+        return ChatOpenAI(
+            model=os.getenv("OPENAI_MODEL", "gpt-5-mini"),
+            api_key=os.environ["OPENAI_API_KEY"],
+            reasoning_effort=os.getenv(
+                "OPENAI_REASONING_EFFORT",
+                "minimal",
+            ),
+        )
 
     if provider == "ollama":
         # Use Ollama's OpenAI-compatible endpoint so LangChain preserves
@@ -86,18 +96,6 @@ def build_model():
             model=os.getenv("OLLAMA_MODEL", "gemma4:e4b"),
             base_url=f"{ollama_base_url}/v1",
             api_key="ollama",
-            temperature=0,
-        )
-
-    if provider == "nim":
-        # NVIDIA
-        return ChatOpenAI(
-            model=os.environ["NIM_MODEL"],
-            base_url=os.getenv(
-                "NIM_BASE_URL",
-                "https://integrate.api.nvidia.com/v1",
-            ),
-            api_key=os.environ["NVIDIA_API_KEY"],
             temperature=0,
         )
 

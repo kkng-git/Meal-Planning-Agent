@@ -1,8 +1,8 @@
-fastapi
-uvicorn[standard]
-langgraph
-langchain
-langchain-openai
+fastapi==0.141.1
+uvicorn[standard]==0.54.0
+langgraph==1.2.12
+langchain==1.4.3
+langchain-openai==1.6.6
 langchain-mcp-adapters==0.3.2
-mcp-server-fetch
-python-dotenv
+mcp-server-fetch==2026.8.18
+python-dotenv==1.2.3
